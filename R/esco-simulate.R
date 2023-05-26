@@ -1038,15 +1038,19 @@ escoSimTrueCounts <- function(sim, type, verbose, numCores = 2) {
             rholist = list()
             genemeans = rowData(sim)$GeneMean
             ordsim = sort(genemeans[match(housegenes, gene.names)], index.return  = TRUE)$ix
+            ordsims <- list()
+            ordsims[[1]] <- ordsim
             rholist[["housekeep"]] = makespd(corr[[1]][ordsim, ordsim])
             rownames(rholist[["housekeep"]]) = housegenes
             colnames(rholist[["housekeep"]]) = rownames(rholist[["housekeep"]])
             for(idx in 1:length(unique(groups))){
                 ordsim = sort(genemeans[which(rowData(sim)$GeneGroup==idx)], index.return  = TRUE)$ix
+                ordsims[[idx+1]] <- ordsim
                 rholist[[paste0("Group",idx)]] = makespd(corr[[idx+1]][ordsim, ordsim])
                 rownames(rholist[[paste0("Group",idx)]]) = gene.names[which(rowData(sim)$GeneGroup==idx)]
                 colnames(rholist[[paste0("Group",idx)]]) = rownames(rholist[[paste0("Group",idx)]])
             }
+            saveRDS(ordsims,paste0("apr21_23/apr21_23_ordsim.rds"))
           }
         }
         else{
